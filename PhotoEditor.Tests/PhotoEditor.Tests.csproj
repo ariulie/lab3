@@ -18,4 +18,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PhotoEditor.Core\PhotoEditor.Core.csproj" />
+  </ItemGroup>
+
 </Project>
