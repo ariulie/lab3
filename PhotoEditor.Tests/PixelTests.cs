@@ -5,6 +5,7 @@ namespace PhotoEditor.Tests.Models;
 
 public class PixelTests
 {
+    // Тест конструктора с четырьмя аргументами
     [Fact]
     public void Constructor_FourArguments_SetsAll()
     {
@@ -15,6 +16,7 @@ public class PixelTests
         Assert.Equal(135, pix.A);
     }
 
+    // Тест конструктора с тремя аргументами (альфа по умолчанию)
     [Fact]
     public void Constructor_ThreeArguments_SetsDefaultA()
     {
