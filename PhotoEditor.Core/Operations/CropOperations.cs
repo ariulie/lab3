@@ -19,7 +19,7 @@ namespace PhotoEditor.Core.Operations
         // Метод применения операции
         public Picture Apply(Picture source)
         {
-            if (source is null) throw new ArgumentNullException(nameof(source), "Исходная картинка не может быть null.");
+            if (source is null) throw new ArgumentNullException(nameof(source), "Исходная картинка не может быть пустой.");
             if (_x + _width > source.Width || _y + _height > source.Height) throw new ArgumentException("Область обрезки выходит за границы исходной картинки.");
             
             // Создание новой картинки нужного размера

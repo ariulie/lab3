@@ -26,14 +26,11 @@ namespace PhotoEditor.Tests.Operations
         {
             var original = CreateSample();
             var cropOp = new CropOperation(1, 1, 2, 2);
-
             var cropped = cropOp.Apply(original);
 
             Assert.Equal(2, cropped.Width);
             Assert.Equal(2, cropped.Height);
-            
             Assert.Equal("test", cropped.Name);
-
             Assert.Equal(new Pixel(1, 1, 0), cropped.GetPixel(0, 0));
             Assert.Equal(new Pixel(2, 1, 0), cropped.GetPixel(1, 0));
             Assert.Equal(new Pixel(1, 2, 0), cropped.GetPixel(0, 1));
@@ -46,12 +43,10 @@ namespace PhotoEditor.Tests.Operations
         {
             var original = CreateSample();
             var cropOp = new CropOperation(1, 0, 3, 1);
-
             var cropped = cropOp.Apply(original);
 
             Assert.Equal(3, cropped.Width);
             Assert.Equal(1, cropped.Height);
-
             Assert.Equal(new Pixel(1, 0, 0), cropped.GetPixel(0, 0));
             Assert.Equal(new Pixel(2, 0, 0), cropped.GetPixel(1, 0));
             Assert.Equal(new Pixel(3, 0, 0), cropped.GetPixel(2, 0));
@@ -63,7 +58,6 @@ namespace PhotoEditor.Tests.Operations
         {
             var original = CreateSample();
             var cropOp = new CropOperation(0, 0, 4, 3);
-
             var cropped = cropOp.Apply(original);
 
             Assert.Equal(original.Width, cropped.Width);
@@ -79,7 +73,6 @@ namespace PhotoEditor.Tests.Operations
         {
             var original = CreateSample();
             var cropOp = new CropOperation(2, 1, 1, 1);
-
             var cropped = cropOp.Apply(original);
 
             Assert.Equal(1, cropped.Width);
@@ -93,12 +86,10 @@ namespace PhotoEditor.Tests.Operations
         {
             var original = CreateSample(); // 4x3
             var cropOp = new CropOperation(2, 1, 2, 2); // x+w = 4, y+h = 3 (граница)
-
             var cropped = cropOp.Apply(original);
 
             Assert.Equal(2, cropped.Width);
             Assert.Equal(2, cropped.Height);
-
             Assert.Equal(new Pixel(2, 1, 0), cropped.GetPixel(0, 0));
             Assert.Equal(new Pixel(3, 1, 0), cropped.GetPixel(1, 0));
             Assert.Equal(new Pixel(2, 2, 0), cropped.GetPixel(0, 1));
@@ -115,7 +106,6 @@ namespace PhotoEditor.Tests.Operations
         {
             var original = CreateSample();
             var cropOp = new CropOperation(x, y, w, h);
-
             Assert.Throws<ArgumentException>(() => cropOp.Apply(original));
         }
 
@@ -125,7 +115,6 @@ namespace PhotoEditor.Tests.Operations
         {
             var original = CreateSample();
             var pristine = CreateSample(); 
-
             var cropOp = new CropOperation(1, 1, 2, 2);
             cropOp.Apply(original);
 
