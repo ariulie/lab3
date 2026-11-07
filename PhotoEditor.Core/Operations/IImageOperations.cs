@@ -1,6 +1,6 @@
 using PhotoEditor.Core.Models;
 
-namespace PhotoEditor.Core.Operation
+namespace PhotoEditor.Core.Operations
 {
     public interface IImageOperation
     {
