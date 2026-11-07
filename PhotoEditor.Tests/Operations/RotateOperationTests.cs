@@ -6,6 +6,7 @@ namespace PhotoEditor.Tests.Operations
 {
     public class RotateOperationTests
     {
+        // Создание тестовой картинки
         private Picture CreateSample()
         {
             var pic = new Picture("test", 2, 3);
@@ -18,6 +19,7 @@ namespace PhotoEditor.Tests.Operations
             return pic;
         }
 
+        // Тест поворота на 90 градусов
         [Fact]
         public void RotateOperation_90Degrees_RotatesCorrectly()
         {
@@ -38,6 +40,7 @@ namespace PhotoEditor.Tests.Operations
             Assert.Equal(pristine.Data, original.Data);
         }
 
+        // Тест поворота на 180 градусов
         [Fact]
         public void RotateOperation_180Degrees_RotatesCorrectly()
         {
@@ -58,6 +61,7 @@ namespace PhotoEditor.Tests.Operations
             Assert.Equal(pristine.Data, original.Data);
         }
 
+        // Тест поворота на 270 градусов
         [Fact]
         public void RotateOperation_270Degrees_RotatesCorrectly()
         {
@@ -74,6 +78,8 @@ namespace PhotoEditor.Tests.Operations
             Assert.Equal(new Pixel(255, 0, 255), rotated.GetPixel(2, 1));
             Assert.Equal(new Pixel(0, 255, 255), rotated.GetPixel(2, 0));
         }
+
+        // Тест эквивалентности -90 и 270 градусов
         [Fact]
         public void RotateOperation_Minus90_Equals270()
         {
@@ -84,6 +90,8 @@ namespace PhotoEditor.Tests.Operations
             Assert.Equal(rotated270.Data, rotatedMinus90.Data);
             Assert.Equal(rotated270.Name, rotatedMinus90.Name);
         }
+
+        // Тест поворота на 360 градусов
         [Fact]
         public void RotateOperation_360Degrees_EqualsOriginal()
         {
@@ -95,6 +103,8 @@ namespace PhotoEditor.Tests.Operations
             Assert.NotSame(original, rotated360);
             Assert.NotSame(original.Data, rotated360.Data);
         }
+
+        // Тест поворота на 0 градусов
         [Fact]
         public void RotateOperation_0Degrees_EqualsOriginalButIsNewObject()
         {
@@ -106,6 +116,8 @@ namespace PhotoEditor.Tests.Operations
             Assert.NotSame(original, rotated0);
             Assert.NotSame(original.Data, rotated0.Data);
         }
+
+        // Тест четырех поворотов на 90 градусов
         [Fact]
         public void RotateOperation_Four90DegreeRotations_EqualsOriginal()
         {
@@ -121,6 +133,8 @@ namespace PhotoEditor.Tests.Operations
             Assert.NotSame(original, rotated);
             Assert.NotSame(original.Data, rotated.Data);
         }
+
+        // Тест выброса исключения при недопустимом угле
         [Theory]
         [InlineData(45)]
         [InlineData(-30)]
@@ -129,18 +143,24 @@ namespace PhotoEditor.Tests.Operations
         {
             Assert.Throws<ArgumentException>(() => new RotateOperation(invalidAngle));
         }
+
+        // Тест выброса исключения при передаче null
         [Fact]
         public void RotateOperation_NullPicture_ThrowsException()
         {
             var rotateOperation = new RotateOperation(90);
             Assert.Throws<ArgumentNullException>(() => rotateOperation.Apply(null!));
         }
+
+        // Тест корректности названий операций
         [Fact]
         public void RotateOperation_CorrectNames()
         {
             Assert.Equal("Поворот на 90°", new RotateOperation(90).Name);
             Assert.Equal("Поворот на 270°", new RotateOperation(-90).Name);
         }
+
+        // Тест обработки больших углов
         [Theory]
         [InlineData(450)]  // 450 = 360 + 90
         [InlineData(-270)] // -270 = 90 - 360
