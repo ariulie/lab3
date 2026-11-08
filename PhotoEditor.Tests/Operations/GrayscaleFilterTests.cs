@@ -8,6 +8,8 @@ namespace PhotoEditor.Tests.Operations
     {
         // Тест преобразования в оттенки серого с проверкой альфа-канала
         [Theory]
+        [InlineData(0, 0, 0, 0)]
+        [InlineData(255, 255, 255, 255)]
         [InlineData(255, 0, 0, 76)]
         [InlineData(0, 255, 0, 150)]
         [InlineData(0, 0, 255, 29)]

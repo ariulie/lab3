@@ -7,7 +7,7 @@ namespace PhotoEditor.Core.Operations
         // Поле для хранения изменения яркости
         private readonly int _delta;
         // Свойство названия операции
-        public override string Name => _delta >= 0 ? $"Яркость + {_delta}" : $"Яркость {_delta}";
+        public override string Name => _delta >= 0 ? $"Яркость +{_delta}" : $"Яркость {_delta}";
         // Переопределение метода преобразования пикселя
         protected override Pixel PixelTransform(Pixel p)
         {

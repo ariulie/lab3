@@ -74,6 +74,15 @@ namespace PhotoEditor.Tests.Operations
             Assert.NotSame(original, result);
             Assert.NotSame(original.Data, result.Data);
         }
+        // Тест границ
+        [Theory]
+        [InlineData(255)]
+        [InlineData(-255)]
+        public void Constructor_BoundaryValues_DoesNotThrow(int delta)
+        {
+            var ex = Record.Exception(() => new BrightnessFilter(delta));
+            Assert.Null(ex);
+        }
 
         // Тест передачи null
         [Fact]
@@ -86,7 +95,7 @@ namespace PhotoEditor.Tests.Operations
         [Fact]
         public void Name_ReturnsExpectedValue()
         {
-            Assert.Equal("Яркость + 50", new BrightnessFilter(50).Name);
+            Assert.Equal("Яркость +50", new BrightnessFilter(50).Name);
             Assert.Equal("Яркость -50", new BrightnessFilter(-50).Name);
         }
     }
