@@ -11,7 +11,7 @@ namespace PhotoEditor.Core.Models
             get { return _name; }
             set
             {
-                if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException(nameof(value), "Название не должно быть пустым.");
+                if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException("Название не должно быть пустым.", nameof(value));
                 else _name = value;
             }
         }
