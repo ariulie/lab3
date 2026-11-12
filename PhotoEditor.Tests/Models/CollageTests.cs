@@ -71,10 +71,10 @@ namespace PhotoEditor.Tests.Models
             var collage = new Collage("test", 3, 3, bgColor);
             var pic1 = CreateSolidPicture(2, 2, red);
             var pic2 = CreateSolidPicture(2, 2, blue);
-            collage.Add(pic2, 1, 1); 
-            collage.Add(pic1, 0, 0); 
+            collage.Add(pic2, 1, 1);
+            collage.Add(pic1, 0, 0);
             var result = collage.Render();
-            Assert.Equal(red, result.GetPixel(1, 1)); 
+            Assert.Equal(red, result.GetPixel(1, 1));
         }
 
         // Тест частичного выхода картинки за границы
@@ -85,10 +85,10 @@ namespace PhotoEditor.Tests.Models
             var red = new Pixel(255, 0, 0, 255);
             var collage = new Collage("test", 3, 3, bgColor);
             var pic = CreateSolidPicture(2, 2, red);
-            collage.Add(pic, 2, 2); 
+            collage.Add(pic, 2, 2);
             var result = collage.Render();
 
-            Assert.Equal(red, result.GetPixel(2, 2)); 
+            Assert.Equal(red, result.GetPixel(2, 2));
             Assert.Equal(bgColor, result.GetPixel(1, 2));
             Assert.Equal(bgColor, result.GetPixel(2, 1));
         }
@@ -105,7 +105,7 @@ namespace PhotoEditor.Tests.Models
             var result = collage.Render();
 
             Assert.Equal(red, result.GetPixel(0, 0));
-            Assert.Equal(bgColor, result.GetPixel(1, 0)); 
+            Assert.Equal(bgColor, result.GetPixel(1, 0));
         }
 
         // Тест картинки полностью за границами (остаётся только фон)
@@ -115,9 +115,9 @@ namespace PhotoEditor.Tests.Models
             var bgColor = new Pixel(0, 0, 0, 255);
             var red = new Pixel(255, 0, 0, 255);
             var collage = new Collage("test", 3, 3, bgColor);
-            
+
             var pic = CreateSolidPicture(2, 2, red);
-            collage.Add(pic, 10, 10); 
+            collage.Add(pic, 10, 10);
 
             var result = collage.Render();
 
@@ -133,7 +133,7 @@ namespace PhotoEditor.Tests.Models
             var red = new Pixel(255, 0, 0, 255);
             var collage = new Collage("test", 3, 3, bgColor);
             var pic = CreateSolidPicture(2, 2, red);
-            var picDataBefore = (byte[])pic.Data.Clone(); 
+            var picDataBefore = (byte[])pic.Data.Clone();
             collage.Add(pic, 0, 0);
             var render1 = collage.Render();
             var render2 = collage.Render();
@@ -150,7 +150,7 @@ namespace PhotoEditor.Tests.Models
         [InlineData(null)]
         public void Constructor_InvalidName_ThrowsException(string? invalidName)
         {
-            Assert.Throws<ArgumentException>(() => new Collage(invalidName!, 10, 10, new Pixel(0,0,0)));
+            Assert.Throws<ArgumentException>(() => new Collage(invalidName!, 10, 10, new Pixel(0, 0, 0)));
         }
 
         // Тест неверных размеров
@@ -161,14 +161,14 @@ namespace PhotoEditor.Tests.Models
         [InlineData(10, -5)]
         public void Constructor_InvalidDimensions_ThrowsException(int width, int height)
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => new Collage("test", width, height, new Pixel(0,0,0)));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new Collage("test", width, height, new Pixel(0, 0, 0)));
         }
 
         // Тест добавления null-картинки
         [Fact]
         public void Add_NullPicture_ThrowsException()
         {
-            var collage = new Collage("test", 10, 10, new Pixel(0,0,0));
+            var collage = new Collage("test", 10, 10, new Pixel(0, 0, 0));
             Assert.Throws<ArgumentNullException>(() => collage.Add(null!, 0, 0));
         }
 
@@ -176,7 +176,7 @@ namespace PhotoEditor.Tests.Models
         [Fact]
         public void Items_ReflectsAddedElements_AndIsReadOnly()
         {
-            var collage = new Collage("test", 10, 10, new Pixel(0,0,0));
+            var collage = new Collage("test", 10, 10, new Pixel(0, 0, 0));
             var pic1 = new Picture("p1", 1, 1);
             var pic2 = new Picture("p2", 1, 1);
             collage.Add(pic1, 1, 2);
@@ -186,6 +186,6 @@ namespace PhotoEditor.Tests.Models
             Assert.Equal(1, collage.Items[0].X);
             Assert.Equal(4, collage.Items[1].Y);
         }
-        
+
     }
 }

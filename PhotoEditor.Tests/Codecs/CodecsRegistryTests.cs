@@ -104,8 +104,8 @@ namespace PhotoEditor.Tests.Codecs
 
             registry.Load("image.fake");
             Assert.True(fakeCodec.WasCalled, "Реестр не выбрал FakeCodec для Load.");
-            
-            fakeCodec.WasCalled = false; 
+
+            fakeCodec.WasCalled = false;
             registry.Save(picture, "image.fake");
             Assert.True(fakeCodec.WasCalled, "Реестр не выбрал FakeCodec для Save.");
         }
