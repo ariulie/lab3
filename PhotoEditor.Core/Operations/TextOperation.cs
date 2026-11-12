@@ -21,9 +21,10 @@ namespace PhotoEditor.Core.Operations
         // Конструктор с параметрами
         public TextOperation(string text, int x, int y, Pixel color, int scale)
         {
-            if (string.IsNullOrWhiteSpace(text)) throw new ArgumentException();
-            if (x < 0 || y < 0) throw new ArgumentOutOfRangeException();
-            if (scale <= 0) throw new ArgumentOutOfRangeException();
+            if (string.IsNullOrWhiteSpace(text)) throw new ArgumentException("Текст не может быть пустым.", nameof(text));
+            if (x < 0) throw new ArgumentOutOfRangeException(nameof(x), "Координата X не может быть отрицательной.");
+            if (y < 0) throw new ArgumentOutOfRangeException(nameof(y), "Координата Y не может быть отрицательной.");
+            if (scale <= 0) throw new ArgumentOutOfRangeException(nameof(scale), "Масштаб должен быть больше нуля.");
         
             _text = text;
             _x = x;

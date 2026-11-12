@@ -86,11 +86,19 @@ namespace PhotoEditor.Tests.Operations
         public void Apply_TextOutOfBounds_TruncatesWithoutException()
         {
             var original = new Picture("test", 5, 5); // Маленькая картинка
-            var op = new TextOperation("IIIII", 0, 0, new Pixel(0,0,0,255), 1);
-            // Текст длиной 5 символов * 6 пикселей = 30 пикселей в ширину, не влезет в 5
-            var exception = Record.Exception(() => op.Apply(original));
+            var black = new Pixel(0, 0, 0, 255);
+            var op = new TextOperation("IIIII", 0, 0, black, 1); 
+            var result = op.Apply(original);
             
-            Assert.Null(exception); // Исключения быть не должно
+            // Верхняя строка (y=0) первой буквы I: .###.
+            Assert.Equal(new Pixel(255, 255, 255, 255), result.GetPixel(0, 0)); // .
+            Assert.Equal(black, result.GetPixel(1, 0)); // #
+            Assert.Equal(black, result.GetPixel(2, 0)); // #
+            Assert.Equal(black, result.GetPixel(3, 0)); // #
+            Assert.Equal(new Pixel(255, 255, 255, 255), result.GetPixel(4, 0)); // .
+            
+            // Строка 4 (y=4) первой буквы: ..#..
+            Assert.Equal(black, result.GetPixel(2, 4)); 
         }
 
         // Тест установки точного цвета с альфа-каналом
@@ -107,16 +115,18 @@ namespace PhotoEditor.Tests.Operations
         }
 
         // Тест заглушки для неизвестного символа
-        [Fact]
+                [Fact]
         public void Apply_UnknownSymbol_DrawsQuestionMark()
         {
             var original = new Picture("test", 10, 10);
             var black = new Pixel(0, 0, 0, 255);
-            var op = new TextOperation("@", 0, 0, black, 1); // @ нет в словаре
-            var result = op.Apply(original);
+            var opUnknown = new TextOperation("@", 0, 0, black, 1); 
+            var opQuestion = new TextOperation("?", 0, 0, black, 1);
+            var resultUnknown = opUnknown.Apply(original);
+            var resultQuestion = opQuestion.Apply(original);
 
-            // Смотрим на первую строку глифа '?': .###.
-            Assert.Equal(black, result.GetPixel(1, 0)); 
+            // Результат для неизвестного символа должен быть идентичен знаку вопроса
+            Assert.Equal(resultQuestion.Data, resultUnknown.Data);
         }
 
         // Тест регистронезависимости
@@ -145,8 +155,17 @@ namespace PhotoEditor.Tests.Operations
             Assert.Equal(pristine.Data, original.Data);
             Assert.NotSame(original, result);
             Assert.NotSame(original.Data, result.Data);
+            Assert.Equal(original.Width, result.Width);
+            Assert.Equal(original.Height, result.Height);
+            Assert.Equal(original.Name, result.Name);
         }
-
+        // Тест на имя операции
+          [Fact]
+        public void Name_ReturnsExpectedValue()
+        {
+            var op = new TextOperation("Hi", 0, 0, new Pixel(0, 0, 0), 1);
+            Assert.Equal("Надпись 'Hi'", op.Name);
+        }
         // Тест невалидного текста
         [Theory]
         [InlineData("")]
