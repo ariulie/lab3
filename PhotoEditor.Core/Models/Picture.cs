@@ -5,14 +5,14 @@ namespace PhotoEditor.Core.Models
         // Поле для хранения названия
         string _name = "";
 
-        // Свойство названия с проверкой
+        // Свойство названия с проверкой (чтобы можно было переименовывать изображение)
         public string Name
         {
             get { return _name; }
             set
             {
                 if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException("Название не должно быть пустым.", nameof(value));
-                else _name = value;
+                _name = value;
             }
         }
 
@@ -28,12 +28,24 @@ namespace PhotoEditor.Core.Models
         {
             if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width), "Ширина не может быть меньше или равна нулю.");
             if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height), "Высота не может быть меньше или равна нулю.");
+            Name = name;
             Width = width;
             Height = height;
-            Name = name;
 
             Data = new byte[width * height * 4];
             Array.Fill(Data, (byte)255);
+        }
+        // Конструктор с данными для сериализации
+        public Picture(string name, int width, int height, byte[] data)
+        {
+            if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width), "Ширина не может быть меньше или равна нулю.");
+            if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height), "Высота не может быть меньше или равна нулю.");
+            if (data is null) throw new ArgumentNullException(nameof(data), "Массив байтов не может быть пустым.");
+            if (data.Length != width * height * 4) throw new ArgumentException("Невалидный размер массива байтов.", nameof(data));
+            Name = name;
+            Width = width;
+            Height = height;
+            Data = (byte[])data.Clone();
         }
 
         // Метод проверки границ

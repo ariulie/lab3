@@ -128,6 +128,60 @@ namespace PhotoEditor.Tests.Models
             Assert.Equal(255, originalPixel.R); 
             Assert.NotEqual(clone.GetPixel(0, 0), originalPixel);
         }
+        // Тест на копирование данных не по ссылке
+        [Fact]
+        public void Constructor_WithData_CopiesArray()
+        {
+            byte[] originalData = new byte[24]; 
+            originalData[0] = 10; // Задаем начальное значение
+            var pic = new Picture("test", 3, 2, originalData);
+            // Меняем исходный массив
+            originalData[0] = 99;
+            // В картинке значение должно остаться прежним 
+            Assert.Equal(10, pic.Data[0]);
+        }
+
+        // Тест на невалидную длину массива
+        [Fact]
+        public void Constructor_InvalidDataLength_ThrowsArgumentException()
+        {
+            byte[] wrongData = new byte[10];
+            Assert.Throws<ArgumentException>(() => new Picture("test", 3, 2, wrongData));
+        }
+
+        // Тест на нулевой массив
+        [Fact]
+        public void Constructor_NullData_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => new Picture("test", 3, 2, null!));
+        }
+
+        // Тест на невалидные данные для второго конструктора
+        [Theory]
+        [InlineData("", 3, 2)]
+        [InlineData("test", 0, 2)]
+        [InlineData("test", -1, 2)]
+        [InlineData("test", 3, 0)]
+        [InlineData("test", 3, -1)]
+        public void Constructor_WithData_InvalidArguments_ThrowsException(string name, int width, int height)
+        {
+            int validLength = Math.Max(0, width * height * 4); 
+            byte[] data = new byte[validLength];
+
+            Assert.ThrowsAny<ArgumentException>(() => new Picture(name, width, height, data));
+        }
+
+        // Тест на правильное чтение пикселей
+        [Fact]
+        public void Constructor_WithData_ReadsPixelsCorrectly()
+        {
+            var pic = new Picture("test", 3, 2); 
+            pic.SetPixel(1, 0, new Pixel(10, 20, 30, 40));
+            byte[] data = pic.Data;
+            var newPic = new Picture("test2", 3, 2, data);
+            var expectedPixel = new Pixel(10, 20, 30, 40);
+            Assert.Equal(expectedPixel, newPic.GetPixel(1, 0));
+        }
     }
 }
 
