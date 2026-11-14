@@ -3,7 +3,7 @@ namespace PhotoEditor.Core.Models
     public class CollageItem
     {
         // Свойство картинки
-        public Picture Pic { get; }
+        public Picture Picture { get; }
         // Свойство координаты X
         public int X { get; }
         // Свойство координаты Y
@@ -13,7 +13,7 @@ namespace PhotoEditor.Core.Models
         public CollageItem(Picture picture, int x, int y)
         {
             if (picture is null) throw new ArgumentNullException(nameof(picture), "Картинка не может быть пустой.");
-            Pic = picture;
+            Picture = picture;
             X = x;
             Y = y;
         }

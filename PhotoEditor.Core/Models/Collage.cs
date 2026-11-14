@@ -63,7 +63,7 @@ namespace PhotoEditor.Core.Models
             // Наложение элементов на фон
             foreach (CollageItem item in _items)
             {
-                Picture pic = item.Pic;
+                Picture pic = item.Picture;
                 for (int i = 0; i < pic.Width; i++)
                 {
                     for (int j = 0; j < pic.Height; j++)
