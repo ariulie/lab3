@@ -24,7 +24,7 @@ namespace PhotoEditor.Core.Operations
             if (string.IsNullOrWhiteSpace(text)) throw new ArgumentException("Текст не может быть пустым.", nameof(text));
             if (x < 0) throw new ArgumentOutOfRangeException(nameof(x), "Координата X не может быть отрицательной.");
             if (y < 0) throw new ArgumentOutOfRangeException(nameof(y), "Координата Y не может быть отрицательной.");
-            if (scale <= 0) throw new ArgumentOutOfRangeException(nameof(scale), "Масштаб должен быть больше нуля.");
+            if (scale < 1 || scale > 100) throw new ArgumentOutOfRangeException(nameof(scale), "Масштаб должен быть от 1 до 100.");
         
             _text = text;
             _x = x;

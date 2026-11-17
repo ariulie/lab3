@@ -28,6 +28,9 @@ namespace PhotoEditor.Core.Models
         {
             if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width), "Ширина не может быть меньше или равна нулю.");
             if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height), "Высота не может быть меньше или равна нулю.");
+            long size = (long)width * height * 4;
+            if (size > Array.MaxLength)
+                throw new ArgumentOutOfRangeException(nameof(width), "Слишком большие размеры изображения.");
             Name = name;
             Width = width;
             Height = height;

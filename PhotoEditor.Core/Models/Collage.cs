@@ -32,6 +32,9 @@ namespace PhotoEditor.Core.Models
         {
             if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width), "Ширина должна быть положительной.");
             if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height), "Высота должна быть положительной.");
+            long size = (long)width * height * 4;
+            if (size > Array.MaxLength)
+                throw new ArgumentOutOfRangeException(nameof(width), "Слишком большие размеры коллажа.");
             Name = name;
             Width = width;
             Height = height;

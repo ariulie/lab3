@@ -12,19 +12,20 @@ namespace PhotoEditor.Core.Operations
         private readonly int _width;
         // Поле для высоты
         private readonly int _height;
-        
+
         // Свойство названия операции
         public string Name => $"Обрезка {_width}×{_height}";
-        
+
         // Метод применения операции
         public Picture Apply(Picture source)
         {
             if (source is null) throw new ArgumentNullException(nameof(source), "Исходная картинка не может быть пустой.");
-            if (_x + _width > source.Width || _y + _height > source.Height) throw new ArgumentException("Область обрезки выходит за границы исходной картинки.");
-            
+            if (_x < 0 || _y < 0 || _width <= 0 || _height <= 0 || _width > source.Width - _x || _height > source.Height - _y)
+                throw new ArgumentException("Область обрезки выходит за границы исходной картинки.");
+
             // Создание новой картинки нужного размера
             Picture result = new Picture(source.Name, _width, _height);
-            
+
             // Двойной цикл копирования пикселей
             for (int i = 0; i < _width; i++)
             {
@@ -36,7 +37,7 @@ namespace PhotoEditor.Core.Operations
             }
             return result;
         }
-        
+
         // Конструктор с параметрами
         public CropOperation(int x, int y, int width, int height)
         {
