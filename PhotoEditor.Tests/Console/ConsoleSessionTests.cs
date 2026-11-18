@@ -3,6 +3,7 @@ using System.IO;
 using PhotoEditor.ConsoleApp;
 using PhotoEditor.Core.Codecs;
 using PhotoEditor.Core.Models;
+using PhotoEditor.Core.State;
 using Xunit;
 
 namespace PhotoEditor.Tests.ConsoleApp
@@ -140,6 +141,107 @@ namespace PhotoEditor.Tests.ConsoleApp
                 Assert.DoesNotContain("повреждён", text);
             }
             finally { if (File.Exists(statePath)) File.Delete(statePath); }
+        }
+        [Fact]
+        public void RestoredState_ContainsRotatedPixelData()
+        {
+            string bmpPath = CreateTempBmp(); // Красный пиксель (255,0,0) в (0,0)
+            string statePath = TempStatePath();
+            try
+            {
+                RunSession(new[] { $"open {bmpPath}", "rotate 90", "exit" }, statePath);
+
+                // Загружаем сохраненный JSON напрямую, минуя консоль
+                var ws = WorkspaceStorage.Load(statePath);
+
+                // Исходная картинка 3x2 после поворота на 90 стала 2x3.
+                // Пиксель из (0,0) переехал в (1,0).
+                var p = ws.Pictures[0].GetPixel(1, 0);
+                Assert.Equal(255, p.R);
+                Assert.Equal(0, p.G);
+            }
+            finally
+            {
+                if (File.Exists(bmpPath)) File.Delete(bmpPath);
+                if (File.Exists(statePath)) File.Delete(statePath);
+            }
+        }
+
+        // Текст после exit не выполняется
+        [Fact]
+        public void CommandsAfterExit_AreNotExecuted()
+        {
+            string bmpPath = CreateTempBmp();
+            string statePath = TempStatePath();
+            try
+            {
+                // Пытаемся сделать open после exit
+                RunSession(new[] { "exit", $"open {bmpPath}" }, statePath);
+
+                var ws = WorkspaceStorage.Load(statePath);
+                Assert.Empty(ws.Pictures); // Картинка не должна была загрузиться
+            }
+            finally
+            {
+                if (File.Exists(bmpPath)) File.Delete(bmpPath);
+                if (File.Exists(statePath)) File.Delete(statePath);
+            }
+        }
+
+        //  Проверка ArgumentNullException
+        [Fact]
+        public void Run_WithNullArguments_ThrowsArgumentNullException()
+        {
+            var session = new ConsoleSession();
+            var reader = new StringReader("");
+            var writer = new StringWriter();
+            string path = "test.json";
+
+            Assert.Throws<ArgumentNullException>(() => session.Run(null!, writer, path));
+            Assert.Throws<ArgumentNullException>(() => session.Run(reader, null!, path));
+            Assert.Throws<ArgumentNullException>(() => session.Run(reader, writer, null!));
+        }
+
+        // Проверка, что при битом файле новый workspace.json корректно читается
+        [Fact]
+        public void CorruptedFile_ReplacedWithValidState()
+        {
+            string statePath = TempStatePath();
+            File.WriteAllText(statePath, "это не json");
+            string badPath = statePath + ".bad";
+            try
+            {
+                RunSession(new[] { "exit" }, statePath);
+
+                // Проверяем, что новый файл не просто "не мусор", а валидный JSON,
+                // который WorkspaceStorage может прочитать без исключений.
+                var ws = WorkspaceStorage.Load(statePath);
+                Assert.NotNull(ws);
+                Assert.Empty(ws.Pictures);
+            }
+            finally
+            {
+                if (File.Exists(statePath)) File.Delete(statePath);
+                if (File.Exists(badPath)) File.Delete(badPath);
+            }
+        }
+
+        // Приглашение > 
+        [Fact]
+        public void Run_PrintsPromptSymbol()
+        {
+            string statePath = TempStatePath();
+            try
+            {
+                var (text, _) = RunSession(new[] { "exit" }, statePath);
+
+                // Проверяем, что приглашение вообще есть в выводе
+                Assert.Contains("> ", text);
+            }
+            finally
+            {
+                if (File.Exists(statePath)) File.Delete(statePath);
+            }
         }
 
         // Тест: повреждённый файл переименовывается в .bad и создаётся новый

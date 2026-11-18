@@ -1,6 +1,4 @@
 using System;
-using System.Data;
-using System.Diagnostics.Tracing;
 using System.IO;
 using PhotoEditor.Core.Codecs;
 using PhotoEditor.Core.State;
@@ -31,49 +29,49 @@ namespace PhotoEditor.ConsoleApp
             {
                 WorkspaceStorage.Save(workspace, statePath);
             }
-            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
+            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException || ex is ArgumentException || ex is NotSupportedException)
             {
                 output.WriteLine($"Не удалось сохранить состояние: {ex.Message}");
             }
         }
 
         // Загрузка рабочего пространства из файла
-        private static Workspace LoadWorkspace(string statePath, TextWriter output)
+        private static (Workspace ws, bool canSave) LoadWorkspace(string statePath, TextWriter output)
         {
-            if (!File.Exists(statePath)) return new Workspace();
+            if (!File.Exists(statePath)) return (new Workspace(), true);
             try
             {
                 Workspace ws = WorkspaceStorage.Load(statePath);
                 output.WriteLine($"Состояние восстановлено: картинок {ws.Pictures.Count}, коллажей {ws.Collages.Count}.");
-                return ws;
-            }   
+                return (ws, true);
+            }
             catch (InvalidDataException)
             {
                 // Файл битый — переименовываем, чтобы потом не затереть его пустым сохранением
                 output.WriteLine("Файл состояния повреждён, начато с пустого пространства.");
                 TryRenameBadFile(statePath, output);
-                return new Workspace();
+                return (new Workspace(), true);
             }
             catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
             {
                 output.WriteLine("Файл состояния повреждён, начато с пустого пространства.");
-                return new Workspace();
+                return (new Workspace(), false);
             }
         }
-        
+
         // Запуск сессии
         public void Run(TextReader input, TextWriter output, string statePath)
         {
             if (input is null) throw new ArgumentNullException(nameof(input));
             if (output is null) throw new ArgumentNullException(nameof(output));
             if (statePath is null) throw new ArgumentNullException(nameof(statePath));
-            
+
             // Загрузка состояния
-            Workspace workspace = LoadWorkspace(statePath, output);
+            var (workspace, canSave) = LoadWorkspace(statePath, output);
             var codecs = new CodecRegistry();
             var processor = new CommandProcessor(workspace, codecs);
             output.WriteLine("Фоторедактор. Введите help для вывода перечня команд.");
-            
+
             // Основной цикл ввода команд
             while (!processor.ShouldExit)
             {
@@ -83,9 +81,14 @@ namespace PhotoEditor.ConsoleApp
                 string result = processor.Execute(line);
                 if (!string.IsNullOrEmpty(result)) output.WriteLine(result);
             }
-            
-            // Сохранение состояния при выходе
-            TrySave(workspace, statePath, output);
+            if (canSave)
+            {
+                TrySave(workspace, statePath, output);
+            }
+            else
+            {
+                output.WriteLine("Состояние не будет сохранено, чтобы не затереть существующий файл.");
+            }
         }
     }
 }
