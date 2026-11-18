@@ -33,7 +33,15 @@
 - **Codecs**: интерфейс `IImageCodec`, кодек `BmpCodec` и реестр `CodecRegistry`;
 - **State**: `Workspace` (открытые изображения и коллажи), `WorkspaceStorage` (запись и чтение состояния в формате JSON).
 
-## Сборка и запуск
+## Запуск
+
+### Готовый исполняемый файл (из архива)
+
+Запустите `publish\PhotoEditor.Console.exe`. Рядом с файлом при выходе создаётся `workspace.json` с сохранённым состоянием.
+
+Для запуска нужен установленный [.NET Runtime](https://dotnet.microsoft.com/download) 9.0 или новее.
+
+### Сборка из исходников
 
 Требуется [.NET SDK](https://dotnet.microsoft.com/download) 9.0 или новее.
 
