@@ -279,7 +279,7 @@ namespace PhotoEditor.Tests.ConsoleApp
         {
             var (proc, ws) = CreateProcessor();
             ws.Add(new Picture("pic", 2, 2));
-            string savePath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".png");
+            string savePath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".gif");
 
             string result = proc.Execute($"save {savePath}");
 

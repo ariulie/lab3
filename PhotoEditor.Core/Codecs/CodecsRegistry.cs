@@ -11,8 +11,9 @@ namespace PhotoEditor.Core.Codecs
         public CodecRegistry()
         {
             _codecs = new List<IImageCodec>();
-            // Регистрация кодека BMP по умолчанию
+            // Регистрация кодеков по умолчанию: BMP (собственный) и PNG/JPEG
             Register(new BmpCodec());
+            Register(new ImageSharpCodec());
         }
 
         // Регистрация нового кодека

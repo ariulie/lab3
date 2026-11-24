@@ -82,7 +82,7 @@ namespace PhotoEditor.Tests.Codecs
 
         // Тест неподдерживаемого расширения
         [Theory]
-        [InlineData("test.png")]
+        [InlineData("test.gif")]
         [InlineData("test")] // Файл без расширения
         public void LoadAndSave_UnsupportedExtension_ThrowsNotSupportedException(string path)
         {
